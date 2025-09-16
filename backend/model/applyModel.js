@@ -12,7 +12,7 @@ const applicationSchema = new mongoose.Schema(
     state: { type: String, required: true },
     collegeName: { type: String, required: true },
     academicStream: { type: String, required: true },
-    photo: { type: String, required: false }, // file path from multer
+    photo: { type: String, required: false }, // multer path
     applicationNumber: { type: String, unique: true }, // auto-generated
   },
   { timestamps: true }
@@ -20,4 +20,3 @@ const applicationSchema = new mongoose.Schema(
 
 const Application = mongoose.model("Application", applicationSchema);
 export default Application;
- 
