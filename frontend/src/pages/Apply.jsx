@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 
 function Apply() {
@@ -9,12 +10,27 @@ function Apply() {
     stream: "",
     district: "",
     state: "",
+    collegeName: "",   // ✅ new field
+    academicStream: "",
+    dob: "",
+    photo: null,
   });
+
+  const [photoPreview, setPhotoPreview] = useState(null);
 
   // handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  // handle photo upload
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, photo: file });
+      setPhotoPreview(URL.createObjectURL(file));
+    }
   };
 
   // handle form submit
@@ -83,6 +99,19 @@ function Apply() {
             />
           </div>
 
+          {/* Date of Birth */}
+          <div>
+            <label className="block mb-1 font-medium">Date of Birth</label>
+            <input
+              type="date"
+              name="dob"
+              value={formData.dob}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+          </div>
+
           {/* Class */}
           <div>
             <label className="block mb-1 font-medium">Class</label>
@@ -144,6 +173,54 @@ function Apply() {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
+          </div>
+
+          {/* College Name */}
+          <div>
+            <label className="block mb-1 font-medium">College Name</label>
+            <input
+              type="text"
+              name="collegeName"
+              value={formData.collegeName}
+              onChange={handleChange}
+              placeholder="Enter your college name"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+          </div>
+
+          {/* Academic Stream */}
+          <div>
+            <label className="block mb-1 font-medium">Academic Stream</label>
+            <input
+              type="text"
+              name="academicStream"
+              value={formData.academicStream}
+              onChange={handleChange}
+              placeholder="e.g., CBSE, ICSE, State Board, Open School"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+          </div>
+
+          {/* Photograph Upload */}
+          <div>
+            <label className="block mb-1 font-medium">Upload Photograph</label>
+            <input
+              type="file"
+              name="photo"
+              accept="image/*"
+              onChange={handlePhotoChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+            {photoPreview && (
+              <img
+                src={photoPreview}
+                alt="Preview"
+                className="mt-3 h-32 w-32 object-cover rounded-lg border"
+              />
+            )}
           </div>
 
           {/* Submit Button */}
