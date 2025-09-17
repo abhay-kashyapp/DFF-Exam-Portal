@@ -1,8 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
+// import cors from "cors";
 import db from "./config/db.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import authRouter from "./routes/authRouter.js";
 import applyRouter from "./routes/applyRouter.js";
 
@@ -12,6 +14,10 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+  origin: "http://localhost:5173", // frontend URL
+  credentials: true,
+}));
 
 // Routes
 app.use("/api/auth", authRouter);
@@ -26,12 +32,7 @@ app.get("/", (req, res) => {
 
 // frontend and backend is connected
 
-import cors from "cors";
 
-app.use(cors({
-  origin: "http://localhost:5173", // frontend URL
-  credentials: true,
-}));
 
 
 // Start server only after DB connects
