@@ -1,31 +1,29 @@
-// import Application from "../models/Application.js";
-import Application from "../model/applyModel.js";
-import multer from "multer";
-import { v4 as uuidv4 } from "uuid"; // generate unique application number
 
-// @desc Submit new application
+
+import Application from "../model/applyModel.js";
+import { v4 as uuidv4 } from "uuid";
+
 export const submitApplication = async (req, res) => {
   try {
+    console.log("Form data:", req.body);
+    console.log("File uploaded:", req.file);
+
     const {
-      name,
-      email,
-      phone,
-      dob,
-      class: studentClass,
-      stream,
-      district,
-      state,
-      collegeName,
-      academicStream,
+      name, email, phone, dob, class: studentClass,
+      stream, district, state, collegeName, academicStream
     } = req.body;
 
-    // file path from multer upload
-    const photo = req.file ? req.file.path : null;
+    if (!name || !email || !phone || !dob || !studentClass || !district || !state || !collegeName || !academicStream) {
+      return res.status(400).json({ message: "Please fill all required fields" });
+    }
 
-    if (!photo) {
+    if (!req.file) {
       return res.status(400).json({ message: "Photo is required" });
     }
 
+   // const photoPath = req.file.path;
+    
+    const photoPath = `/uploads/${req.file.filename}`;
     const applicationNumber = "APP-" + uuidv4().slice(0, 8).toUpperCase();
 
     const application = await Application.create({
@@ -34,32 +32,34 @@ export const submitApplication = async (req, res) => {
       phone,
       dob,
       class: studentClass,
-      stream,
+      stream: stream || "",
       district,
       state,
       collegeName,
       academicStream,
-      photo,
-      applicationNumber,
+      photo: photoPath,
+      applicationNumber
     });
 
     res.status(201).json({
       message: "Application submitted successfully",
-      application,
+      applicationNumber: application.applicationNumber
     });
+
   } catch (error) {
-    console.error("Error saving application:", error);
-    res.status(500).json({ message: "Server error", error });
+    console.error("Error in submitApplication:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
 
 
-// @desc Get application details by application number
+
+
+
 export const getAdmitCard = async (req, res) => {
   try {
     const { applicationNumber } = req.params;
-
     const application = await Application.findOne({ applicationNumber });
 
     if (!application) {
@@ -68,6 +68,7 @@ export const getAdmitCard = async (req, res) => {
 
     res.status(200).json({ application });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    console.error("Error in getAdmitCard:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
